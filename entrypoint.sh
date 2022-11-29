@@ -9,6 +9,7 @@ CU=$(id -u)
 ls -la | head
 chown -R $CU ./
 ls -la | head
+git --no-pager log | head -10
 LAST_COMMIT=$(git --no-pager log | head -1 | awk -F"it " '{print $2}')
 echo LAST_COMMIT=$LAST_COMMIT
 git --no-pager show $LAST_COMMIT
