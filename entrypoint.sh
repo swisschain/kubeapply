@@ -5,10 +5,12 @@ set -e
 
 # run checks
 #git config --global --add safe.directory /github/workspace
-ls -la 
-id
-#LAST_COMMIT=$(git --no-pager log | head -1 | awk -F"it " '{print $2}')
-#echo LAST_COMMIT=$LAST_COMMIT
+CU=$(id -u)
+ls -la | head
+chown -R $CU ./
+ls -la | head
+LAST_COMMIT=$(git --no-pager log | head -1 | awk -F"it " '{print $2}')
+echo LAST_COMMIT=$LAST_COMMIT
 #git --no-pager show $LAST_COMMIT
 #
 #for i in $((
