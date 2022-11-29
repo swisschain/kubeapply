@@ -7,9 +7,6 @@ name: Deploy test
 on:
   push:
     branches: [ master ]
-#    paths:
-#    - 'Lykke-Jobs-Mailerlite/**'
-#    - 'Lykke-Service-Mailerlite/**'
 
 jobs:
   deploy:
@@ -19,10 +16,10 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
-#    - uses: actions/checkout@v2
     - name: deploy
       uses: swisschain/kubeapply@master
       env:
         KUBE_CONFIG_DATA: ${{ secrets.LYKKE_TEST_KUBE_CONFIG_DATA }}
+        APPLY: true
 ```
 
