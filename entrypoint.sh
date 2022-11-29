@@ -19,23 +19,23 @@ echo LAST_COMMIT=$LAST_COMMIT
 #git show
 #git --no-pager show $LAST_COMMIT
 #
-for i in $((
-           for i in $(git --no-pager show $LAST_COMMIT | grep ^--- | awk -F"a/" '{print $2}');do echo $i; done
-           for i in $(git --no-pager show $LAST_COMMIT | grep ^+++ | grep -v /dev/null | awk -F"b/" '{print $2}');do echo $i; done
+for FILE in $((
+           for GID in $(git --no-pager show $LAST_COMMIT | grep ^--- | awk -F"a/" '{print $2}');do echo $GID; done
+           for GIA in $(git --no-pager show $LAST_COMMIT | grep ^+++ | grep -v /dev/null | awk -F"b/" '{print $2}');do echo $GIA; done
            ) | sort | uniq )
 do
-  if [ -f $i ];then
-    if grep "kind: Deployment\|kind: ConfigMap\|kind: Service\|kind: Secret" $i > /dev/null 2>&1;then
-      echo apply $i
+  if [ -f $FILE ];then
+    if grep "kind: Deployment\|kind: ConfigMap\|kind: Service\|kind: Secret" $FILE > /dev/null 2>&1;then
+      echo check $FILE
       echo dry run client
-      kubectl apply --dry-run='client' -f $i
+      kubectl apply --dry-run='client' -f $FILE
       echo dry run server
-      kubectl apply --dry-run='server' -f $i
+      kubectl apply --dry-run='server' -f $FILE
+      if [ "$APPLY" = "true" ];then
+        echo APPLY $FILE
+        kubectl apply -f $FILE
+      fi
     fi
   fi
 done
-# apply
-if [ "$APPLY" = "true" ];then
-  echo APPLY
-fi
 rm /tmp/config
