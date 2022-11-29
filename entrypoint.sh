@@ -4,7 +4,7 @@
 set -e
 
 # run checks
-git config --global --add safe.directory /github/workspace
+#git config --global --add safe.directory /github/workspace
 LAST_COMMIT=$(git --no-pager log | head -1 | awk -F"it " '{print $2}')
 echo LAST_COMMIT=$LAST_COMMIT
 git --no-pager show $LAST_COMMIT
