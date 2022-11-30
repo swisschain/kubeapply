@@ -20,7 +20,7 @@ echo LAST_COMMIT=$LAST_COMMIT
 #git --no-pager show $LAST_COMMIT
 #
 for FILE in $((
-           for GID in $(git --no-pager show $LAST_COMMIT | grep ^--- | awk -F"a/" '{print $2}');do echo $GID; done
+           for GID in $(git --no-pager show $LAST_COMMIT | grep ^--- | grep -v /dev/null | awk -F"a/" '{print $2}');do echo $GID; done
            for GIA in $(git --no-pager show $LAST_COMMIT | grep ^+++ | grep -v /dev/null | awk -F"b/" '{print $2}');do echo $GIA; done
            ) | sort | uniq )
 do
