@@ -11,7 +11,7 @@ echo get kube nodes
 kubectl get nodes
 echo get git changes
 git config --global --add safe.directory /github/workspace
-LAST_COMMIT=$(git --no-pager log | head -1 | sed 's#commit /##g')
+LAST_COMMIT=$(git --no-pager log | head -1 | sed 's#commit ##g')
 echo LAST_COMMIT=$LAST_COMMIT
 #
 for FILE in $((
