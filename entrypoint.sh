@@ -71,7 +71,7 @@ done
 echo check for deleted files
 PREV_COMMIT=$(git --no-pager log | grep ^commit | head -2 | tail -1 | sed 's#commit ##g')
 echo PREV_COMMIT=$PREV_COMMIT
-git checkout $PREV_COMMIT
+git checkout $PREV_COMMIT > /dev/null 2>&1
 for FILE in $(cat $DELETED_FILES)
 do
   echo -=[ processing $FILE ]=-
