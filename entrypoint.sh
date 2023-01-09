@@ -41,9 +41,11 @@ else
   echo $FILE not valid kube file
 fi
 }
+
 # run checks
 DELETED_FILES=/tmp/deleted_files
 echo > $DELETED_FILES
+rm $DELETED_FILES
 echo get kube config
 echo "$KUBE_CONFIG_DATA" | base64 -d > /tmp/config
 export KUBECONFIG=/tmp/config
@@ -51,13 +53,20 @@ echo get kube nodes
 kubectl get nodes
 echo get git changes
 git config --global --add safe.directory /github/workspace
-LAST_COMMIT=$(git --no-pager log | head -1 | sed 's#commit ##g')
+if [ "$LOG" = "DEBUG" ];then
+  echo GITHUB_EVENT=$GITHUB_EVENT
+fi
+LAST_COMMIT=$(echo $GITHUB_EVENT | jq -r .after)
 echo LAST_COMMIT=$LAST_COMMIT
+PREV_COMMIT=$(echo $GITHUB_EVENT | jq -r .before)
+echo PREV_COMMIT=$PREV_COMMIT
 #
+echo found commits...
+echo $GITHUB_EVENT | jq -r '.commits[] | "\"\(.message)\" (\(.id))"'
+echo get changed files...
 for FILE in $((
-           for GID in $(git --no-pager show $LAST_COMMIT | grep ^--- | grep -v /dev/null | sed 's#--- a/##g');do echo $GID; done
-           for GIA in $(git --no-pager show $LAST_COMMIT | grep ^+++ | grep -v /dev/null | sed 's#+++ b/##g');do echo $GIA; done
-           ) | sort | uniq )
+                git diff --name-only $PREV_COMMIT $LAST_COMMIT
+              ) | sort )
 do
   echo -=[ processing $FILE ]=-
   if [ -f $FILE ];then
@@ -68,18 +77,24 @@ do
   fi
 done
 # 
-echo check for deleted files
-PREV_COMMIT=$(git --no-pager log | grep ^commit | head -2 | tail -1 | sed 's#commit ##g')
-echo PREV_COMMIT=$PREV_COMMIT
-git checkout $PREV_COMMIT > /dev/null 2>&1
-for FILE in $(cat $DELETED_FILES)
-do
-  echo -=[ processing $FILE ]=-
-  if [ -f $FILE ];then
-    check_and_delete
-  else
-    echo can not find $FILE
+if [ -f "$DELETED_FILES" ];then
+  echo check for deleted files
+  git checkout $PREV_COMMIT > /dev/null 2>&1
+  if [ "$LOG" = "DEBUG" ];then
+    echo cat DELETED_FILES=$DELETED_FILES
+    cat $DELETED_FILES
   fi
-done
-rm /tmp/deleted_files
-rm /tmp/config
+  for FILE in $(cat $DELETED_FILES)
+  do
+    echo -=[ processing $FILE ]=-
+    if [ -f $FILE ];then
+      check_and_delete
+    else
+      echo can not find $FILE
+    fi
+  done
+  rm $DELETED_FILES
+else
+  echo check for deleted files skipped
+fi
+rm $KUBECONFIG
