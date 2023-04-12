@@ -56,13 +56,13 @@ echo get git changes
 if [ "$LOG" = "DEBUG" ];then
   echo GITHUB_EVENT=$GITHUB_EVENT
 fi
-LAST_COMMIT=$(echo $GITHUB_EVENT | jq -r .after)
+LAST_COMMIT=$(echo $GITHUB_EVENT | /usr/bin/jq -r .after)
 echo LAST_COMMIT=$LAST_COMMIT
-PREV_COMMIT=$(echo $GITHUB_EVENT | jq -r .before)
+PREV_COMMIT=$(echo $GITHUB_EVENT | /usr/bin/jq -r .before)
 echo PREV_COMMIT=$PREV_COMMIT
 #
 echo found commits...
-echo $GITHUB_EVENT | jq -r '.commits[] | "\"\(.message)\" (\(.id))"'
+echo $GITHUB_EVENT | /usr/bin/jq -r '.commits[] | "\"\(.message)\" (\(.id))"'
 echo get changed files...
 for FILE in $((
                 /usr/bin/git diff --name-only $PREV_COMMIT $LAST_COMMIT
