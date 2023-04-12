@@ -52,7 +52,7 @@ export KUBECONFIG=/tmp/config
 echo get kube nodes
 /usr/local/bin/kubectl get nodes
 echo get git changes
-git config --global --add safe.directory /github/workspace
+/usr/bin/git config --global --add safe.directory /github/workspace
 if [ "$LOG" = "DEBUG" ];then
   echo GITHUB_EVENT=$GITHUB_EVENT
 fi
@@ -65,7 +65,7 @@ echo found commits...
 echo $GITHUB_EVENT | jq -r '.commits[] | "\"\(.message)\" (\(.id))"'
 echo get changed files...
 for FILE in $((
-                git diff --name-only $PREV_COMMIT $LAST_COMMIT
+                /usr/bin/git diff --name-only $PREV_COMMIT $LAST_COMMIT
               ) | sort | grep $PATH)
 do
   echo -=[ processing $FILE ]=-
@@ -79,7 +79,7 @@ done
 # 
 #if [ -f "$DELETED_FILES" ];then
 #  echo check for deleted files
-#  git checkout $PREV_COMMIT > /dev/null 2>&1
+#  /usr/bin/git checkout $PREV_COMMIT > /dev/null 2>&1
 #  if [ "$LOG" = "DEBUG" ];then
 #    echo cat DELETED_FILES=$DELETED_FILES
 #    cat $DELETED_FILES
