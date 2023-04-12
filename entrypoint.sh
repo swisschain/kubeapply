@@ -15,12 +15,12 @@ check_for_kube_file() {
 check_and_apply() {
 if check_for_kube_file;then
   echo dry run client
-  kubectl apply --dry-run='client' -f $FILE
+  /usr/local/bin/kubectl apply --dry-run='client' -f $FILE
   echo dry run server
-  kubectl apply --dry-run='server' -f $FILE
+  /usr/local/bin/kubectl apply --dry-run='server' -f $FILE
   if [ "$APPLY" = "true" ];then
     echo APPLY $FILE
-    kubectl apply -f $FILE
+    /usr/local/bin/kubectl apply -f $FILE
   fi
 else
   echo $FILE not valid kube file
@@ -30,12 +30,12 @@ fi
 #check_and_delete() {
 #if check_for_kube_file;then
 #  echo dry run client
-#  kubectl delete --dry-run='client' -f $FILE
+#  /usr/local/bin/kubectl delete --dry-run='client' -f $FILE
 #  echo dry run server
-#  kubectl delete --dry-run='server' -f $FILE
+#  /usr/local/bin/kubectl delete --dry-run='server' -f $FILE
 #  if [ "$APPLY" = "true" ];then
 #    echo DELETE $FILE
-#    kubectl delete -f $FILE
+#    /usr/local/bin/kubectl delete -f $FILE
 #  fi
 #else
 #  echo $FILE not valid kube file
@@ -50,7 +50,7 @@ echo get kube config
 echo "$KUBE_CONFIG_DATA" | /bin/base64 -d > /tmp/config
 export KUBECONFIG=/tmp/config
 echo get kube nodes
-kubectl get nodes
+/usr/local/bin/kubectl get nodes
 echo get git changes
 git config --global --add safe.directory /github/workspace
 if [ "$LOG" = "DEBUG" ];then
