@@ -5,7 +5,7 @@ set -e
 
 # functions
 check_for_kube_file() {
-  if grep "kind: Deployment\|kind: ConfigMap\|kind: Service\|kind: Secret" $FILE > /dev/null 2>&1;then
+  if /bin/grep "kind: Deployment\|kind: ConfigMap\|kind: Service\|kind: Secret" $FILE > /dev/null 2>&1;then
     return 0
   else
     return 1
@@ -66,7 +66,7 @@ echo $GITHUB_EVENT | /usr/bin/jq -r '.commits[] | "\"\(.message)\" (\(.id))"'
 echo get changed files...
 for FILE in $((
                 /usr/bin/git diff --name-only $PREV_COMMIT $LAST_COMMIT
-              ) | sort | grep $PATH)
+              ) | /usr/bin/sort | /bin/grep $PATH)
 do
   echo -=[ processing $FILE ]=-
   if [ -f $FILE ];then
@@ -93,8 +93,8 @@ done
 #      echo can not find $FILE
 #    fi
 #  done
-#  rm $DELETED_FILES
+#  /bin/rm $DELETED_FILES
 #else
 #  echo check for deleted files skipped
 #fi
-rm $KUBECONFIG
+/bin/rm $KUBECONFIG
