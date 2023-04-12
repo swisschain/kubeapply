@@ -47,7 +47,7 @@ fi
 #echo > $DELETED_FILES
 #rm $DELETED_FILES
 echo get kube config
-echo "$KUBE_CONFIG_DATA" | base64 -d > /tmp/config
+echo "$KUBE_CONFIG_DATA" | /bin/base64 -d > /tmp/config
 export KUBECONFIG=/tmp/config
 echo get kube nodes
 kubectl get nodes
