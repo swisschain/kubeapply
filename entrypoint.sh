@@ -66,7 +66,7 @@ echo $GITHUB_EVENT | jq -r '.commits[] | "\"\(.message)\" (\(.id))"'
 echo get changed files...
 for FILE in $((
                 git diff --name-only $PREV_COMMIT $LAST_COMMIT
-              ) | sort )
+              ) | sort | grep $PATH)
 do
   echo -=[ processing $FILE ]=-
   if [ -f $FILE ];then
